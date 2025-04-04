@@ -3,190 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Secret Cipher Game</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'VT323', monospace;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(to right, #0f0f0f, #1a1a1a);
-      color: #33ff33;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    #catImage {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 80px;
-      animation: wiggle 2s infinite ease-in-out;
-    }
-
-    #instructionsButton {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      font-size: 24px;
-      font-weight: bold;
-      color: #33ff33;
-      cursor: pointer;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.8);
-    }
-
-    .modal-content {
-      background-color: #111;
-      color: #33ff33;
-      margin: 15% auto;
-      padding: 20px;
-      border: 2px solid #33ff33;
-      width: 80%;
-      border-radius: 10px;
-    }
-
-    .close {
-      color: #33ff33;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .close:hover {
-      color: #00cc00;
-    }
-
-    .container {
-      flex-grow: 1;
-      max-width: 1200px;
-      margin: 100px auto 40px auto;
-      padding: 20px;
-      background-color: #111;
-      border-radius: 12px;
-      box-shadow: 0 0 30px #33ff33;
-    }
-
-    /* Encrypted output appears at the top, then input area */
-    textarea {
-      width: 100%;
-      height: 100px;
-      margin-bottom: 20px;
-      padding: 10px;
-      font-size: 18px;
-      border: 2px solid #33ff33;
-      border-radius: 8px;
-      background-color: #000;
-      color: #33ff33;
-    }
-
-    .tables {
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-
-    .table-container {
-      display: flex;
-      flex-direction: column;
-      width: 48%;
-      background: #0f0f0f;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 10px;
-    }
-
-    th, td {
-      padding: 8px;
-      border: 1px solid #33ff33;
-      text-align: center;
-    }
-
-    th {
-      background-color: #000;
-      color: #33ff33;
-    }
-
-    td {
-      background-color: #0a0a0a;
-    }
-
-    .letterCell {
-      font-size: 24px;
-    }
-
-    .clickable {
-      cursor: pointer;
-      color: #33ff33;
-      text-decoration: underline;
-    }
-
-    .highlight {
-      background-color: yellow;
-    }
-
-    .letter-mapping input {
-      width: 90%;
-      padding: 5px;
-      font-size: 16px;
-      border: 1px solid #33ff33;
-      border-radius: 6px;
-      background: #000;
-      color: #33ff33;
-    }
-
-    .button-row {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 20px;
-    }
-
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      border: none;
-      background: #33ff33;
-      color: #000;
-      border-radius: 10px;
-      transition: all 0.2s ease-in-out;
-    }
-
-    button:hover {
-      transform: scale(1.1);
-      background: #00cc00;
-    }
-
-    @keyframes wiggle {
-      0%, 100% { transform: rotate(0); }
-      25% { transform: rotate(5deg); }
-      75% { transform: rotate(-5deg); }
-    }
-  </style>
+  <title>Desert CodeSprouts - Cybersecurity Game</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
   <img id="catImage" src="cat.jpg" alt="Cat Mascot" />
   <div id="instructionsButton" onclick="toggleInstructions()">Instructions</div>
 
@@ -194,35 +14,70 @@
     <div class="modal-content">
       <span class="close" onclick="toggleInstructions()">&times;</span>
       <h2>Instructions</h2>
-      <p>1. Customize letter mappings.</p>
-      <p>2. Type text in the input box and click Encrypt.</p>
-      <p>3. Encrypted output appears in the top box.</p>
-      <p>4. Click Function Two to update the word frequency table (words with frequency > 2 appear).</p>
+      <div class="instructions-content">
+        <h3>Substitution Cipher Challenge</h3>
+        <p>In cryptography, a substitution cipher is a method of encrypting by which units of plaintext are replaced with ciphertext according to a fixed system.</p>
+        <p>Your task is to break the cipher by:</p>
+        <ol>
+          <li>Analyzing the frequency of letters and words in the encrypted text</li>
+          <li>Guessing letter mappings based on common patterns</li>
+          <li>Testing your solution by typing in the input box</li>
+        </ol>
+        <p>Common patterns to look for:</p>
+        <ul>
+          <li>Single-letter words are usually 'a' or 'i'</li>
+          <li>The most common letters in English are E, T, A, O, I, N</li>
+          <li>Common word endings include -ing, -ed, -tion</li>
+        </ul>
+      </div>
     </div>
   </div>
 
   <div class="container">
+    <div class="game-header">
+      <h1>Substitution Cipher Challenge</h1>
+      <div class="score-container">
+        <button id="scoreButton" onclick="toggleLeaderboard()">Score: <span id="score">0</span></button>
+      </div>
+    </div>
+
+    <!-- Challenge section -->
+    <div class="challenge-section">
+      <h2>Challenge #1</h2>
+      <div class="challenge-text" id="challengeText">
+        <!-- Challenge text will be inserted here -->
+      </div>
+      <button id="nextChallenge" class="hidden">Next Challenge</button>
+    </div>
+
     <!-- Output box appears at the top -->
     <textarea id="outputText" placeholder="Encrypted output..." readonly></textarea>
     <!-- Input box for encryption -->
-    <textarea id="inputText" placeholder="Type here to encrypt..."></textarea>
+    <textarea id="inputText" placeholder="Type here to encrypt or decrypt..."></textarea>
 
     <div class="tables">
       <!-- Left table container: Letter mappings + Encrypt button below -->
       <div class="table-container">
+        <h3>Letter Mappings</h3>
         <table id="letterMappings">
           <thead>
             <tr>
-              <th>Letter</th>
-              <th>Mapping</th>
+              <th colspan="26">Map each letter to its substitution</th>
             </tr>
           </thead>
-          <tbody></tbody>
+          <tbody>
+            <!-- Letter mappings will be generated here -->
+          </tbody>
         </table>
-        <button onclick="encrypt()">Encrypt</button>
+        <div class="button-row">
+          <button onclick="encrypt()">Encrypt</button>
+          <button onclick="decrypt()">Decrypt</button>
+          <button onclick="checkSolution()">Check Solution</button>
+        </div>
       </div>
-      <!-- Right table container: Word frequency + Function Two button below -->
+      <!-- Right table container: Word frequency + Analyze button below -->
       <div class="table-container">
+        <h3>Word Frequency Analysis</h3>
         <table id="wordFrequency">
           <thead>
             <tr>
@@ -233,134 +88,22 @@
           <tbody>
             <!-- Default row: Always display example row -->
             <tr>
-              <td><span class="clickable" onclick="alert('You clicked on \"example\"')">example</span></td>
+              <td><span class="clickable" onclick="highlightWord('example')">example</span></td>
               <td>5</td>
             </tr>
           </tbody>
         </table>
-        <button onclick="functionTwo()">Function Two</button>
+        <button onclick="analyzeFrequency()">Analyze Frequency</button>
       </div>
+    </div>
+
+    <!-- Hint system -->
+    <div class="hint-container">
+      <button id="hintButton" onclick="showHint()">Get Hint</button>
+      <div id="hintText" class="hidden"></div>
     </div>
   </div>
 
-  <script>
-    const letterMappings = new Proxy({}, {
-      set(target, key, value) {
-        target[key] = value;
-        const inputField = document.getElementById(`map${key}`);
-        if (inputField) {
-          inputField.value = value;
-        }
-        return true;
-      }
-    });
-
-    function generateLetterMappings() {
-      const tbody = document.querySelector('#letterMappings tbody');
-      tbody.innerHTML = '';
-      for (let i = 0; i < 26; i++) {
-        const letter = String.fromCharCode(65 + i);
-        const row = document.createElement('tr');
-
-        const letterCell = document.createElement('td');
-        letterCell.classList.add('letterCell');
-        letterCell.textContent = letter;
-
-        const inputCell = document.createElement('td');
-        const input = document.createElement('input');
-        input.classList.add('letter-mapping');
-        input.id = `map${letter}`;
-        input.addEventListener('input', function () {
-          letterMappings[letter] = input.value;
-        });
-        inputCell.appendChild(input);
-
-        row.appendChild(letterCell);
-        row.appendChild(inputCell);
-        tbody.appendChild(row);
-
-        letterMappings[letter] = String.fromCharCode(65 + 25 - i);
-      }
-    }
-
-    const wordFrequencies = new Proxy({}, {
-      set(target, key, value) {
-        target[key] = value;
-        updateFrequencyTable();
-        return true;
-      }
-    });
-
-    function updateFrequencyTable() {
-      const tbody = document.querySelector("#wordFrequency tbody");
-      // Remove all dynamic rows but keep the default row (first row)
-      const rows = tbody.querySelectorAll("tr");
-      rows.forEach((row, index) => {
-        if(index !== 0) row.remove();
-      });
-      const sortedEntries = Object.entries(wordFrequencies).sort((a, b) => b[1] - a[1]);
-      sortedEntries.forEach(([word, count]) => {
-        if(count > 2) {
-          const row = document.createElement("tr");
-          const wordCell = document.createElement("td");
-          wordCell.textContent = word;
-          wordCell.classList.add("clickable");
-          wordCell.onclick = () => highlightWord(word);
-          const countCell = document.createElement("td");
-          countCell.textContent = count;
-          row.appendChild(wordCell);
-          row.appendChild(countCell);
-          tbody.appendChild(row);
-        }
-      });
-    }
-
-    function highlightWord(word) {
-      alert(`You clicked on "${word}"`);
-    }
-
-    function encrypt() {
-      const textArea = document.getElementById("inputText");
-      let input = textArea.value, output = "";
-      for (let i = 0; i < input.length; i++) {
-        const char = input[i];
-        if (isLetter(char)) {
-          const mapped = letterMappings[char.toUpperCase()] || char;
-          output += isUpperCase(char) ? mapped : mapped.toLowerCase();
-        } else {
-          output += char;
-        }
-      }
-      document.getElementById("outputText").value = output;
-    }
-
-    function functionTwo() {
-      updateFrequencyTable();
-    }
-
-    function isUpperCase(letter) {
-      const code = letter.charCodeAt(0);
-      return code >= 65 && code <= 90;
-    }
-
-    function isLetter(letter) {
-      const code = letter.charCodeAt(0);
-      return (code >= 65 && code <= 90) || (code >= 97 && code <= 122);
-    }
-
-    function toggleInstructions() {
-      const modal = document.getElementById("instructionsModal");
-      modal.style.display = (modal.style.display === "block") ? "none" : "block";
-    }
-
-    window.onclick = function(event) {
-      const modal = document.getElementById("instructionsModal");
-      if (event.target === modal) {
-        modal.style.display = "none";
-      }
-    };
-
-    generateLetterMappings();
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
