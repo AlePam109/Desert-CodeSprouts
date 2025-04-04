@@ -1,336 +1,366 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Letter Mappings and Word Frequencies</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Secret Cipher Game</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
-        .container {
-            flex-grow: 1;
-            padding: 20px;
-        }
+    * {
+      box-sizing: border-box;
+    }
 
-        textarea {
-            width: 100%;
-            height: 150px;
-            margin-bottom: 20px;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
+    body {
+      font-family: 'VT323', monospace;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #0f0f0f, #1a1a1a);
+      color: #33ff33;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-        .tables {
-            display: flex;
-            justify-content: space-between;
-        }
+    #catImage {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 80px;
+      animation: wiggle 2s infinite ease-in-out;
+    }
 
-        table {
-            width: 48%;
-            border-collapse: collapse;
-        }
+    #instructionsButton {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #33ff33;
+      cursor: pointer;
+    }
 
-        th, td {
-            padding: 8px;
-            border: 1px solid #ddd;
-            text-align: center;
-        }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+    }
 
-        th {
-            background-color: #f4f4f4;
-        }
+    .modal-content {
+      background-color: #111;
+      color: #33ff33;
+      margin: 15% auto;
+      padding: 20px;
+      border: 2px solid #33ff33;
+      width: 80%;
+      border-radius: 10px;
+    }
 
-        td {
-            background-color: #fafafa;
-        }
+    .close {
+      color: #33ff33;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-        .clickable {
-            cursor: pointer;
-            color: blue;
-            text-decoration: underline;
-        }
+    .close:hover {
+      color: #00cc00;
+    }
 
-        .highlight {
-            background-color: yellow;
-        }
+    .container {
+      flex-grow: 1;
+      max-width: 1200px;
+      margin: 100px auto 40px auto;
+      padding: 20px;
+      background-color: #111;
+      border-radius: 12px;
+      box-shadow: 0 0 30px #33ff33;
+    }
 
-        .letter-mapping input {
-            width: 100%;
-            padding: 8px;
-            font-size: 14px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
+    /* Encrypted output appears at the top, then input area */
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-bottom: 20px;
+      padding: 10px;
+      font-size: 18px;
+      border: 2px solid #33ff33;
+      border-radius: 8px;
+      background-color: #000;
+      color: #33ff33;
+    }
 
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin-top: 20px;
-            cursor: pointer;
-            border: none;
-            background-color: #4CAF50;
-            color: white;
-            border-radius: 4px;
-        }
+    .tables {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
 
-        button:hover {
-            background-color: #45a049;
-        }
+    .table-container {
+      display: flex;
+      flex-direction: column;
+      width: 48%;
+      background: #0f0f0f;
+    }
 
-        .button-container {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-        }
-    </style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+    }
+
+    th, td {
+      padding: 8px;
+      border: 1px solid #33ff33;
+      text-align: center;
+    }
+
+    th {
+      background-color: #000;
+      color: #33ff33;
+    }
+
+    td {
+      background-color: #0a0a0a;
+    }
+
+    .letterCell {
+      font-size: 24px;
+    }
+
+    .clickable {
+      cursor: pointer;
+      color: #33ff33;
+      text-decoration: underline;
+    }
+
+    .highlight {
+      background-color: yellow;
+    }
+
+    .letter-mapping input {
+      width: 90%;
+      padding: 5px;
+      font-size: 16px;
+      border: 1px solid #33ff33;
+      border-radius: 6px;
+      background: #000;
+      color: #33ff33;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      background: #33ff33;
+      color: #000;
+      border-radius: 10px;
+      transition: all 0.2s ease-in-out;
+    }
+
+    button:hover {
+      transform: scale(1.1);
+      background: #00cc00;
+    }
+
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(0); }
+      25% { transform: rotate(5deg); }
+      75% { transform: rotate(-5deg); }
+    }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <textarea id="textArea" placeholder="Type or paste text here..."></textarea>
+  <img id="catImage" src="cat.jpg" alt="Cat Mascot" />
+  <div id="instructionsButton" onclick="toggleInstructions()">Instructions</div>
 
-        <div class="tables">
-            <!-- Left Table for Letter Mappings -->
-            <table id="letterMappings">
-                <thead>
-                    <tr>
-                        <th>Letter</th>
-                        <th>Mapping</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Rows will be filled dynamically -->
-                </tbody>
-            </table>
-
-            <!-- Right Table for Word Frequency -->
-            <table id="wordFrequency">
-                <thead>
-                    <tr>
-                        <th>Word</th>
-                        <th>Frequency</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Example row for a word frequency -->
-                    <tr>
-                        <td><span class="clickable" onclick="highlightWord('example')">example</span></td>
-                        <td>5</td>
-                    </tr>
-                    <!-- More rows will be added dynamically -->
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Button Container -->
-        <div class="button-container">
-            <button onclick="encrypt()">Encrypt</button>
-            <button onclick="functionTwo()">Function Two</button>
-        </div>
+  <div id="instructionsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="toggleInstructions()">&times;</span>
+      <h2>Instructions</h2>
+      <p>1. Customize letter mappings.</p>
+      <p>2. Type text in the input box and click Encrypt.</p>
+      <p>3. Encrypted output appears in the top box.</p>
+      <p>4. Click Function Two to update the word frequency table (words with frequency > 2 appear).</p>
     </div>
+  </div>
 
-    <div class="container">
-        <textarea id="inputText" placeholder="Type here..."></textarea>
-        <textarea id="outputText" placeholder="Output..." readonly></textarea>
+  <div class="container">
+    <!-- Output box appears at the top -->
+    <textarea id="outputText" placeholder="Encrypted output..." readonly></textarea>
+    <!-- Input box for encryption -->
+    <textarea id="inputText" placeholder="Type here to encrypt..."></textarea>
+
+    <div class="tables">
+      <!-- Left table container: Letter mappings + Encrypt button below -->
+      <div class="table-container">
+        <table id="letterMappings">
+          <thead>
+            <tr>
+              <th>Letter</th>
+              <th>Mapping</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <button onclick="encrypt()">Encrypt</button>
+      </div>
+      <!-- Right table container: Word frequency + Function Two button below -->
+      <div class="table-container">
+        <table id="wordFrequency">
+          <thead>
+            <tr>
+              <th>Word</th>
+              <th>Frequency</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Default row: Always display example row -->
+            <tr>
+              <td><span class="clickable" onclick="alert('You clicked on \"example\"')">example</span></td>
+              <td>5</td>
+            </tr>
+          </tbody>
+        </table>
+        <button onclick="functionTwo()">Function Two</button>
+      </div>
     </div>
+  </div>
 
-    <script>
-        // Dynamically create letter mappings (A to Z)
-        // Proxy object to track changes and update UI automatically
-        const letterMappings = new Proxy({}, {
-            set(target, key, value) {
-                target[key] = value; // Set the new value
-                const inputField = document.getElementById(`map${key.toUpperCase()}`);
-                if (inputField) {
-                    inputField.value = value; // Update input field when letterMappings is changed
-                }
-                return true;
-            }
+  <script>
+    const letterMappings = new Proxy({}, {
+      set(target, key, value) {
+        target[key] = value;
+        const inputField = document.getElementById(`map${key}`);
+        if (inputField) {
+          inputField.value = value;
+        }
+        return true;
+      }
+    });
+
+    function generateLetterMappings() {
+      const tbody = document.querySelector('#letterMappings tbody');
+      tbody.innerHTML = '';
+      for (let i = 0; i < 26; i++) {
+        const letter = String.fromCharCode(65 + i);
+        const row = document.createElement('tr');
+
+        const letterCell = document.createElement('td');
+        letterCell.classList.add('letterCell');
+        letterCell.textContent = letter;
+
+        const inputCell = document.createElement('td');
+        const input = document.createElement('input');
+        input.classList.add('letter-mapping');
+        input.id = `map${letter}`;
+        input.addEventListener('input', function () {
+          letterMappings[letter] = input.value;
         });
+        inputCell.appendChild(input);
 
-        function generateLetterMappings() {
-            const tbody = document.querySelector('#letterMappings tbody');
-            tbody.innerHTML = ''; // Clear existing rows
+        row.appendChild(letterCell);
+        row.appendChild(inputCell);
+        tbody.appendChild(row);
 
-            for (let i = 0; i < 26; i++) {
-                const letter = String.fromCharCode(65 + i); // A to Z
-                const row = document.createElement('tr');
+        letterMappings[letter] = String.fromCharCode(65 + 25 - i);
+      }
+    }
 
-                const letterCell = document.createElement('td');
-                letterCell.textContent = letter;
+    const wordFrequencies = new Proxy({}, {
+      set(target, key, value) {
+        target[key] = value;
+        updateFrequencyTable();
+        return true;
+      }
+    });
 
-                const inputCell = document.createElement('td');
-                const input = document.createElement('input');
-                input.classList.add('letter-mapping');
-                input.id = `map${letter}`; // Dynamically create the ID for each letter
-                input.addEventListener('input', function () {
-                    letterMappings[letter] = input.value; // Update the mapping when the input changes
-                });
-                inputCell.appendChild(input);
-
-                row.appendChild(letterCell);
-                row.appendChild(inputCell);
-                tbody.appendChild(row);
-
-                // Initialize the letter mapping object with empty values
-                letterMappings[letter] = String.fromCharCode(65 + 25 - i);
-                // letterMappings[letter] = ''
-            }
+    function updateFrequencyTable() {
+      const tbody = document.querySelector("#wordFrequency tbody");
+      // Remove all dynamic rows but keep the default row (first row)
+      const rows = tbody.querySelectorAll("tr");
+      rows.forEach((row, index) => {
+        if(index !== 0) row.remove();
+      });
+      const sortedEntries = Object.entries(wordFrequencies).sort((a, b) => b[1] - a[1]);
+      sortedEntries.forEach(([word, count]) => {
+        if(count > 2) {
+          const row = document.createElement("tr");
+          const wordCell = document.createElement("td");
+          wordCell.textContent = word;
+          wordCell.classList.add("clickable");
+          wordCell.onclick = () => highlightWord(word);
+          const countCell = document.createElement("td");
+          countCell.textContent = count;
+          row.appendChild(wordCell);
+          row.appendChild(countCell);
+          tbody.appendChild(row);
         }
+      });
+    }
 
-        // Proxy to store word frequencies and update the table dynamically
-        const wordFrequencies = new Proxy({}, {
-            set(target, key, value) {
-                target[key] = value; // Set the new value in the map
-                updateFrequencyTable(); // Update the UI when data changes
-                return true;
-            }
-        });
+    function highlightWord(word) {
+      alert(`You clicked on "${word}"`);
+    }
 
-        // Function to update word frequencies based on textarea input
-        function updateWordFrequencies() {
-            const text = document.getElementById("textArea").value.toLowerCase(); // Get text and convert to lowercase
-            const words = text.match(/\b\w+\b/g) || []; // Extract words using regex
-
-            // Clear the existing word frequencies
-            Object.keys(wordFrequencies).forEach(key => delete wordFrequencies[key]);
-
-            // Count occurrences of each word
-            words.forEach(word => {
-                wordFrequencies[word] = (wordFrequencies[word] || 0) + 1;
-            });
+    function encrypt() {
+      const textArea = document.getElementById("inputText");
+      let input = textArea.value, output = "";
+      for (let i = 0; i < input.length; i++) {
+        const char = input[i];
+        if (isLetter(char)) {
+          const mapped = letterMappings[char.toUpperCase()] || char;
+          output += isUpperCase(char) ? mapped : mapped.toLowerCase();
+        } else {
+          output += char;
         }
+      }
+      document.getElementById("outputText").value = output;
+    }
 
-        // Function to update the frequency table
-        function updateFrequencyTable() {
-            const tbody = document.querySelector("#wordFrequency tbody");
-            tbody.innerHTML = ''; // Clear table
+    function functionTwo() {
+      updateFrequencyTable();
+    }
 
-            const sortedEntries = Object.entries(wordFrequencies).sort((a, b) => b[1] - a[1]);
+    function isUpperCase(letter) {
+      const code = letter.charCodeAt(0);
+      return code >= 65 && code <= 90;
+    }
 
-            sortedEntries.forEach(([word, count]) => {
-                if(count > 2) {
-                    const row = document.createElement("tr");
+    function isLetter(letter) {
+      const code = letter.charCodeAt(0);
+      return (code >= 65 && code <= 90) || (code >= 97 && code <= 122);
+    }
 
-                    const wordCell = document.createElement("td");
-                    wordCell.textContent = word;
-                    wordCell.classList.add("clickable-word");
-                    wordCell.addEventListener("click", () => highlightWord(word));
+    function toggleInstructions() {
+      const modal = document.getElementById("instructionsModal");
+      modal.style.display = (modal.style.display === "block") ? "none" : "block";
+    }
 
-                    const countCell = document.createElement("td");
-                    countCell.textContent = count;
+    window.onclick = function(event) {
+      const modal = document.getElementById("instructionsModal");
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    };
 
-                    row.appendChild(wordCell);
-                    row.appendChild(countCell);
-                    tbody.appendChild(row);
-                }
-            });
-        }
-
-        // Function to highlight a word in the textarea
-        function highlightWord(word) {
-            const textArea = document.getElementById("textArea");
-            const regex = new RegExp(`\\b(${word})\\b`, "gi"); // Capturing group added
-
-            console.log(regex);
-            
-            textArea.innerHTML = textArea.innerHTML.replace(regex, '<span class="highlight">$1</span>');
-        }
-
-        // Attach event listener to textarea for real-time updates
-        document.getElementById("textArea").addEventListener("input", updateWordFrequencies);
-
-
-        function isUpperCase(letter) {
-            const code = letter.charCodeAt(0);
-            return code >= 65 && code <= 90; // A-Z
-        }
-
-        function isLetter(letter) {
-            const code = letter.charCodeAt(0);
-            return (code >= 65 && code <= 90) || (code >= 97 && code <= 122); // A-Z
-        }
-
-        // Function One: Example action for the first button
-        function encrypt() {
-            // Get the text in the text area
-            const textArea = document.getElementById("textArea");
-            let input = textArea.value, output = "";
-            console.log(typeof(letterMappings['H']));
-
-            for(let i = 0; i < input.length; i++) {
-                if(isLetter(input[i])){ 
-                    if(letterMappings[input[i].toUpperCase()] !== '') {
-                        console.log(input[i] + " -- " + letterMappings[input[i].toUpperCase()]);
-                        if(isUpperCase(input[i]))
-                            output += letterMappings[input[i]];
-                        else {
-                            console.log("Hello");
-                            output += letterMappings[input[i].toUpperCase()].toLowerCase();
-                        }
-                    } else {
-                        // console.log("here " + input[i]);
-                        output += input[i];
-                    }
-                } else {
-                    // console.log("nothing " + input[i])
-                    output += input[i];
-                }
-            }
-
-            console.log(output);
-            textArea.value = output;
-        }
-
-        // Function Two: Example action for the second button
-        function functionTwo() {
-            // alert("Function Two was called!");
-            // Add your custom logic for Function Two here
-            updateFrequencyTable();
-        }
-
-        // Function to process the input text (Modify this function as needed)
-        function processText(input) {
-            let freq = {};
-            for(let i = 0; i < 26; i++) {
-                let letter = String.fromCharCode(97 + i);
-                freq[letter] = 0;
-            }
-
-            for(let i = 0; i < input.length; i++) {
-                if(isLetter(input[i]))
-                    freq[input[i].toLowerCase()]++;
-            }
-
-            let hash = "";
-            for(let i = 0; i < 26; i++) {
-                const letter = String.fromCharCode(97+i);
-                if(freq[letter] > 0)                
-                    hash += letter + freq[letter];
-                else
-                    hash += "";
-            }
-
-            return hash;
-        }
-
-        // Event listener to update output in real-time
-        document.getElementById("inputText").addEventListener("input", function () {
-            const input = this.value;
-            document.getElementById("outputText").value = processText(input);
-        });
-
-        // Call the function to generate letter mappings on page load
-        generateLetterMappings();
-    </script>
+    generateLetterMappings();
+  </script>
 </body>
 </html>
