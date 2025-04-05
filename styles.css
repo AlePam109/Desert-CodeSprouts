@@ -399,64 +399,13 @@ button:hover {
   }
 }
 
-/* Leaderboard styling */
-.leaderboard-container {
-  margin-top: 30px;
-  padding: 15px;
-  background-color: #0a0a0a;
-  border: 2px solid #33ff33;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
-  display: none; /* Initially hidden */
-}
-
-.leaderboard-container h3 {
-  text-align: center;
-  margin-top: 0;
-  margin-bottom: 15px;
-  color: #33ff33;
-  font-size: 24px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-}
-
-#leaderboardTable {
+#matrixCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
+  height: 100%;
+  z-index: -1;
+  background: black;
 }
 
-#leaderboardTable th {
-  background-color: #000;
-  color: #33ff33;
-  padding: 10px;
-  text-align: left;
-  border-bottom: 2px solid #33ff33;
-}
-
-#leaderboardTable td {
-  padding: 8px 10px;
-  border-bottom: 1px solid #33ff33;
-  color: #33ff33;
-}
-
-#leaderboardTable tr:hover {
-  background-color: rgba(51, 255, 51, 0.1);
-}
-
-#leaderboardTable tr:last-child td {
-  border-bottom: none;
-}
-
-/* Responsive adjustments for leaderboard */
-@media (max-width: 768px) {
-  .leaderboard-container {
-    padding: 10px;
-  }
-  
-  #leaderboardTable th,
-  #leaderboardTable td {
-    padding: 6px 8px;
-    font-size: 14px;
-  }
-} 

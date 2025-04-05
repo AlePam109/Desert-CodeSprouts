@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <canvas id="matrixCanvas"></canvas>
   <img id="catImage" src="cat.jpg" alt="Cat Mascot" />
   <div id="instructionsButton" onclick="toggleInstructions()">Instructions</div>
 
@@ -72,7 +73,6 @@
         <div class="button-row">
           <button onclick="encrypt()">Encrypt</button>
           <button onclick="decrypt()">Decrypt</button>
-          <button onclick="checkSolution()">Check Solution</button>
         </div>
       </div>
       <!-- Right table container: Word frequency + Analyze button below -->

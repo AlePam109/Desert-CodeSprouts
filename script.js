@@ -1,3 +1,55 @@
+// Matrix Digital Rain Effect
+const canvas = document.getElementById('matrixCanvas');
+const ctx = canvas.getContext('2d');
+
+// Set canvas size to window size
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+// Characters to use in the rain
+const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
+const fontSize = 14;
+const columns = canvas.width / fontSize;
+const drops = [];
+
+// Initialize drops
+for (let i = 0; i < columns; i++) {
+    drops[i] = 1;
+}
+
+// Draw the digital rain
+function drawMatrix() {
+    // Semi-transparent black background to create fade effect
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Green text
+    ctx.fillStyle = '#0F0';
+    ctx.font = fontSize + 'px monospace';
+
+    // Draw characters
+    for (let i = 0; i < drops.length; i++) {
+        // Random character
+        const char = chars[Math.floor(Math.random() * chars.length)];
+        
+        // Draw the character
+        ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+
+        // Reset drop to top when it reaches bottom
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+        }
+        drops[i]++;
+    }
+}
+
+// Animate the rain
+setInterval(drawMatrix, 33);
+
 // Game state
 const gameState = {
   score: 0,
@@ -228,39 +280,6 @@ function analyzeFrequency(text = document.getElementById("outputText").value) {
   });
   
   updateFrequencyTable();
-}
-
-// Check if the current solution is correct
-function checkSolution() {
-  const output = document.getElementById("outputText").value.toUpperCase();
-  const solution = gameState.challenges[gameState.currentChallenge].solution;
-  
-  if (output === solution) {
-    // Correct solution
-    const challengeScore = 100 - (gameState.hintsUsed * 10); // Deduct points for hints used
-    gameState.score += challengeScore;
-    updateScore();
-    
-    // Add to scoreboard
-    gameState.scoreboard.push({
-      challenge: gameState.currentChallenge + 1,
-      score: challengeScore,
-      hintsUsed: gameState.hintsUsed,
-      timestamp: new Date().toLocaleTimeString()
-    });
-    
-    // Show success message
-    alert("Congratulations! You solved the cipher!");
-    
-    // Show next challenge button
-    document.getElementById('nextChallenge').classList.remove('hidden');
-    
-    // Show scoreboard
-    showScoreboard();
-  } else {
-    // Incorrect solution
-    alert("That's not quite right. Keep trying!");
-  }
 }
 
 // Move to next challenge
