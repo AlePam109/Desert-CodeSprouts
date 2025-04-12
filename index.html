@@ -36,10 +36,7 @@
 
   <div class="container">
     <div class="game-header">
-      <h1>Substitution Cipher Challenge</h1>
-      <div class="score-container">
-        <button id="scoreButton" onclick="toggleLeaderboard()">Score: <span id="score">0</span></button>
-      </div>
+      <h1 class="glitch-title">Substitution Cipher Challenge</h1>
     </div>
 
     <!-- Challenge section -->
@@ -51,10 +48,11 @@
       <button id="nextChallenge" class="hidden">Next Challenge</button>
     </div>
 
-    <!-- Output box appears at the top -->
-    <textarea id="outputText" placeholder="Encrypted output..." readonly></textarea>
     <!-- Input box for encryption -->
     <textarea id="inputText" placeholder="Type here to encrypt or decrypt..."></textarea>
+    <!-- Output box appears at the top -->
+    <textarea id="outputText" placeholder="Encrypted output..." readonly></textarea>
+
 
     <div class="tables">
       <!-- Left table container: Letter mappings + Encrypt button below -->
