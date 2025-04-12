@@ -182,23 +182,24 @@ function loadChallenge(index) {
 // Update word frequency table
 function updateFrequencyTable() {
   const tbody = document.querySelector("#wordFrequency tbody");
-  // Remove all rows
-  tbody.innerHTML = '';
+  tbody.innerHTML = ''; // Clear existing rows
   
   const sortedEntries = Object.entries(wordFrequencies)
     .sort((a, b) => b[1] - a[1]);
     
   sortedEntries.forEach(([word, count]) => {
-    if(count > 1) { // Only show words that appear more than once
+    if(count > 0) { // Show all words, not just those with count > 1
       const row = document.createElement("tr");
+      
       const wordCell = document.createElement("td");
       wordCell.textContent = word;
       wordCell.classList.add("clickable");
       wordCell.onclick = () => highlightWord(word);
+      
       const countCell = document.createElement("td");
       countCell.textContent = count;
-      row.appendChild(wordCell);
       
+      row.appendChild(wordCell);
       row.appendChild(countCell);
       tbody.appendChild(row);
     }
@@ -265,14 +266,14 @@ function decrypt() {
 }
 
 // Analyze word frequency in text
-function analyzeFrequency(text = document.getElementById("outputText").value) {
+function analyzeFrequency(text = document.getElementById("inputText").value) {
   // Reset frequencies
   for (const key in wordFrequencies) {
     delete wordFrequencies[key];
   }
   
   // Count word frequencies
-  const words = text.split(/\s+/);
+  const words = text.toLowerCase().match(/\b\w+\b/g) || [];
   words.forEach(word => {
     if (word.length > 0) {
       wordFrequencies[word] = (wordFrequencies[word] || 0) + 1;
@@ -509,4 +510,14 @@ function generateHash(input) {
 document.getElementById("hashInput").addEventListener("input", function() {
   const input = this.value;
   document.getElementById("hashOutput").value = generateHash(input);
+});
+
+// Add event listeners for real-time frequency analysis
+document.getElementById("inputText").addEventListener("input", function() {
+  analyzeFrequency(this.value);
+});
+
+// Initialize frequency analysis on page load
+document.addEventListener('DOMContentLoaded', function() {
+  analyzeFrequency();
 }); 
