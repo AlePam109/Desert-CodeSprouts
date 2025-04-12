@@ -60,6 +60,8 @@ body {
   border-radius: 10px;
   max-height: 90vh;
   overflow-y: auto;
+  font-size: 18px;
+  line-height: 1.6;
 }
 
 .close {
@@ -407,5 +409,24 @@ button:hover {
   height: 100%;
   z-index: -1;
   background: black;
+}
+
+.instructions-content h3 {
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #33ff33;
+}
+
+.instructions-content p {
+  margin-bottom: 15px;
+}
+
+.instructions-content ol, .instructions-content ul {
+  margin-left: 20px;
+  margin-bottom: 15px;
+}
+
+.instructions-content li {
+  margin-bottom: 10px;
 }
 
