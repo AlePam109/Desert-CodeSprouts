@@ -251,6 +251,43 @@ button:hover {
   display: none;
 }
 
+/* Hashing function styles */
+.hashing-container {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #0a0a0a;
+  border: 2px solid #33ff33;
+  border-radius: 8px;
+}
+
+.hashing-container h3 {
+  color: #33ff33;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.hashing-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hashing-box textarea {
+  width: 100%;
+  height: 80px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #33ff33;
+  border-radius: 4px;
+  background-color: #000;
+  color: #33ff33;
+  resize: none;
+}
+
+#hashOutput {
+  font-family: monospace;
+}
+
 @keyframes wiggle {
   0%, 100% { transform: rotate(0); }
   25% { transform: rotate(5deg); }

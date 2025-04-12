@@ -480,4 +480,33 @@ function updateLeaderboard() {
 }
 
 // Initialize the game when the page loads
-document.addEventListener('DOMContentLoaded', initGame); 
+document.addEventListener('DOMContentLoaded', initGame);
+
+// Hashing function
+function generateHash(input) {
+  let freq = {};
+  for(let i = 0; i < 26; i++) {
+    let letter = String.fromCharCode(97 + i);
+    freq[letter] = 0;
+  }
+
+  for(let i = 0; i < input.length; i++) {
+    if(isLetter(input[i]))
+      freq[input[i].toLowerCase()]++;
+  }
+
+  let hash = "";
+  for(let i = 0; i < 26; i++) {
+    const letter = String.fromCharCode(97+i);
+    if(freq[letter] > 0)                
+      hash += letter + freq[letter];
+  }
+
+  return hash;
+}
+
+// Event listener for hash input
+document.getElementById("hashInput").addEventListener("input", function() {
+  const input = this.value;
+  document.getElementById("hashOutput").value = generateHash(input);
+}); 
