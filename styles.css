@@ -708,3 +708,28 @@ button:hover {
     width: 100%;
   }
 }
+
+/* Loading indicator and error message styles */
+.loading-indicator {
+  text-align: center;
+  padding: 10px;
+  margin: 10px 0;
+  color: #33ff33;
+  font-style: italic;
+  animation: pulse 1.5s infinite;
+}
+
+.error-message {
+  text-align: center;
+  padding: 10px;
+  margin: 10px 0;
+  color: #ff3333;
+  border: 1px solid #ff3333;
+  border-radius: 4px;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}

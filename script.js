@@ -505,23 +505,41 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Initialize Pyodide
 let pyodide = null;
+let isInitialized = false;
+
 async function initPyodide() {
-  pyodide = await loadPyodide();
-  await pyodide.loadPackage("micropip");
-  await pyodide.runPythonAsync(`
-    import micropip
-    await micropip.install('numpy')
-  `);
+  if (isInitialized) return;
+  
+  const sandbox = document.querySelector('.python-sandbox');
+  const loadingIndicator = document.createElement('div');
+  loadingIndicator.className = 'loading-indicator';
+  loadingIndicator.textContent = 'Initializing Python environment...';
+  sandbox.appendChild(loadingIndicator);
+  
+  try {
+    pyodide = await loadPyodide();
+    await pyodide.loadPackage("micropip");
+    isInitialized = true;
+    loadingIndicator.remove();
+  } catch (error) {
+    loadingIndicator.textContent = `Error: ${error.message}`;
+    loadingIndicator.className = 'error-message';
+  }
 }
 
 // Run Python code
 async function runPythonCode() {
-  if (!pyodide) {
+  if (!isInitialized) {
     await initPyodide();
   }
   
   const code = document.getElementById('pythonCode').value;
   const outputDiv = document.getElementById('pythonOutput');
+  
+  if (!isInitialized) {
+    outputDiv.textContent = 'Python environment is still initializing...';
+    return;
+  }
   
   try {
     // Redirect stdout to our output div
@@ -547,5 +565,6 @@ function clearPythonOutput() {
   document.getElementById('pythonOutput').textContent = '';
 }
 
-// Initialize Pyodide when the page loads
-document.addEventListener('DOMContentLoaded', initPyodide); 
+// Initialize Pyodide when the sandbox is first interacted with
+document.getElementById('pythonCode').addEventListener('focus', initPyodide);
+document.querySelector('.sandbox-controls button').addEventListener('click', initPyodide); 
