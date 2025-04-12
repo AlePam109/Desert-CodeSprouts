@@ -100,20 +100,35 @@
     <div class="hashing-container">
       <h3>Hash Collision Game</h3>
       <p>Find an input that produces the same hash as the target!</p>
-      <div class="hash-game-info">
-        <p>Target Hash: <span id="targetHash"></span></p>
-        <p>Hint: <span id="hashHint"></span></p>
-        <p id="hashAttempts"></p>
-      </div>
       <div class="hashing-box">
         <textarea id="hashInput" placeholder="Type here to generate hash..."></textarea>
-        <div id="hashOutput" class="output-display"></div>
+        <div class="output-container">
+          <label>Hash Output:</label>
+          <div id="hashOutput" class="output-display"></div>
+        </div>
       </div>
       <p id="hashResult"></p>
       <button onclick="checkHashCollision()">Check Collision</button>
     </div>
+
+    <!-- Python Sandbox -->
+    <div class="python-sandbox">
+      <h3>Python Sandbox</h3>
+      <div class="sandbox-container">
+        <textarea id="pythonCode" placeholder="Write your Python code here..."></textarea>
+        <div class="sandbox-controls">
+          <button onclick="runPythonCode()">Run Code</button>
+          <button onclick="clearPythonOutput()">Clear Output</button>
+        </div>
+        <div class="sandbox-output">
+          <h4>Output:</h4>
+          <div id="pythonOutput"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 </body>
 </html>

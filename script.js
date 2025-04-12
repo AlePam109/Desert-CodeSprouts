@@ -501,4 +501,51 @@ document.getElementById("inputText").addEventListener("input", function() {
 // Initialize frequency analysis on page load
 document.addEventListener('DOMContentLoaded', function() {
   analyzeFrequency();
-}); 
+});
+
+// Initialize Pyodide
+let pyodide = null;
+async function initPyodide() {
+  pyodide = await loadPyodide();
+  await pyodide.loadPackage("micropip");
+  await pyodide.runPythonAsync(`
+    import micropip
+    await micropip.install('numpy')
+  `);
+}
+
+// Run Python code
+async function runPythonCode() {
+  if (!pyodide) {
+    await initPyodide();
+  }
+  
+  const code = document.getElementById('pythonCode').value;
+  const outputDiv = document.getElementById('pythonOutput');
+  
+  try {
+    // Redirect stdout to our output div
+    pyodide.runPython(`
+      import sys
+      from io import StringIO
+      sys.stdout = StringIO()
+    `);
+    
+    // Run the user's code
+    await pyodide.runPythonAsync(code);
+    
+    // Get the output
+    const output = pyodide.runPython('sys.stdout.getvalue()');
+    outputDiv.textContent = output;
+  } catch (error) {
+    outputDiv.textContent = `Error: ${error.message}`;
+  }
+}
+
+// Clear Python output
+function clearPythonOutput() {
+  document.getElementById('pythonOutput').textContent = '';
+}
+
+// Initialize Pyodide when the page loads
+document.addEventListener('DOMContentLoaded', initPyodide); 
