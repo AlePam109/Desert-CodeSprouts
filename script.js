@@ -71,7 +71,6 @@ const gameState = {
       hint: "Look for repeated words like 'IS' and 'A' which are common in English."
     }
   ],
-  hintsUsed: 0,
   scoreboard: [] // Array to store completed challenges
 };
 
@@ -166,17 +165,13 @@ function loadChallenge(index) {
   const challenge = gameState.challenges[index];
   document.getElementById('challengeText').textContent = challenge.text;
   document.getElementById('inputText').value = '';
-  document.getElementById('outputText').value = '';
+  document.getElementById('outputText').textContent = '';
   
   // Reset letter mappings for new challenge
   generateLetterMappings();
   
   // Hide next challenge button until solved
   document.getElementById('nextChallenge').classList.add('hidden');
-  
-  // Reset hints
-  gameState.hintsUsed = 0;
-  document.getElementById('hintText').classList.add('hidden');
 }
 
 // Update word frequency table
@@ -235,7 +230,7 @@ function encrypt() {
     }
   }
   
-  document.getElementById("outputText").value = output;
+  document.getElementById("outputText").textContent = output;
   analyzeFrequency(output);
 }
 
@@ -261,7 +256,7 @@ function decrypt() {
     }
   }
   
-  document.getElementById("outputText").value = output;
+  document.getElementById("outputText").textContent = output;
   analyzeFrequency(output);
 }
 
@@ -287,19 +282,6 @@ function analyzeFrequency(text = document.getElementById("inputText").value) {
 function nextChallenge() {
   gameState.currentChallenge++;
   loadChallenge(gameState.currentChallenge);
-}
-
-// Show a hint
-function showHint() {
-  const hintText = document.getElementById('hintText');
-  const hint = gameState.challenges[gameState.currentChallenge].hint;
-  
-  hintText.textContent = hint;
-  hintText.classList.remove('hidden');
-  
-  // Increment hints used and update score
-  gameState.hintsUsed++;
-  updateScore();
 }
 
 // Update score display
@@ -373,7 +355,6 @@ function updateScoreboard() {
 function resetGame() {
   gameState.score = 0;
   gameState.currentChallenge = 0;
-  gameState.hintsUsed = 0;
   gameState.scoreboard = []; // Clear scoreboard
   
   // Remove scoreboard if it exists
@@ -509,7 +490,7 @@ function generateHash(input) {
 // Event listener for hash input
 document.getElementById("hashInput").addEventListener("input", function() {
   const input = this.value;
-  document.getElementById("hashOutput").value = generateHash(input);
+  document.getElementById("hashOutput").textContent = generateHash(input);
 });
 
 // Add event listeners for real-time frequency analysis

@@ -51,8 +51,10 @@
     <!-- Input box for encryption -->
     <textarea id="inputText" placeholder="Type here to encrypt or decrypt..."></textarea>
     <!-- Output box appears at the top -->
-    <textarea id="outputText" placeholder="Encrypted output..." readonly></textarea>
-
+    <div class="output-container">
+      <label>Encrypted/Decrypted Output:</label>
+      <div id="outputText" class="output-display"></div>
+    </div>
 
     <div class="tables">
       <!-- Left table container: Letter mappings + Encrypt button below -->
@@ -96,17 +98,19 @@
 
     <!-- Hashing function box -->
     <div class="hashing-container">
-      <h3>Hashing Function</h3>
+      <h3>Hash Collision Game</h3>
+      <p>Find an input that produces the same hash as the target!</p>
+      <div class="hash-game-info">
+        <p>Target Hash: <span id="targetHash"></span></p>
+        <p>Hint: <span id="hashHint"></span></p>
+        <p id="hashAttempts"></p>
+      </div>
       <div class="hashing-box">
         <textarea id="hashInput" placeholder="Type here to generate hash..."></textarea>
-        <textarea id="hashOutput" placeholder="Hash output..." readonly></textarea>
+        <div id="hashOutput" class="output-display"></div>
       </div>
-    </div>
-
-    <!-- Hint system -->
-    <div class="hint-container">
-      <button id="hintButton" onclick="showHint()">Get Hint</button>
-      <div id="hintText" class="hidden"></div>
+      <p id="hashResult"></p>
+      <button onclick="checkHashCollision()">Check Collision</button>
     </div>
   </div>
 
