@@ -519,6 +519,17 @@ async function initPyodide() {
   try {
     pyodide = await loadPyodide();
     await pyodide.loadPackage("micropip");
+    
+    // Define a helper function to make HTTP calls
+    // Example usage: 
+    // res = await send_http_request("http://localhost/api")
+    await pyodide.runPythonAsync(`
+      from pyodide.http import pyfetch
+
+      async def send_http_request(url):
+          response = await pyfetch(url)  # Await pyfetch directly
+          return await response.string()  # Return the string content of the response
+    `);
     isInitialized = true;
     loadingIndicator.remove();
   } catch (error) {
