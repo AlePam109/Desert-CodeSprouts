@@ -90,6 +90,7 @@ function initGame() {
   generateLetterMappings();
   loadChallenge(gameState.currentChallenge);
   updateScore();
+}
 
 // Generate letter mapping table
 function generateLetterMappings() {
@@ -150,7 +151,7 @@ function loadChallenge(index) {
 
   document.getElementById("inputText").value =
     "R, GSV OVZWVI LU GSV YOZXP WZDM, SZEV ULI BLF Z NRHHRLM LU TIVZG RNKLIGZMXV! " +
-    "DRGS BLFI SVOK, GSRH XRGB, NVTZOLKLORH, DROO UVVO GSV YOZXP WZDM’H QFWTVNVMG. " +
+    "DRGS BLFI SVOK, GSRH XRGB, NVTZOLKLORH, DROO UVVO GSV YOZXP WZDM'H QFWTVNVMG. " +
     "DRGS BLFI SVOK, DV DROO YIRMT ZM VMW GL HLXRVGB ZH DV PMLD RG! GL WL GSRH, " +
     "BLF DROO KZIGRXRKZGV RM ZM VUULIG GL HZYLGZTV HVXFIRGB, VOVXGIRX KLDVI, " +
     "YZMPRMT, ZMW ULLW HFKKORVH. R DLFOW ORPV ZOO LU BLF GL WL GSV ULOOLDRMT GZHPH:\n\n" +
@@ -168,7 +169,6 @@ function loadChallenge(index) {
     "NRHHRLM RH XIRGRXZO. RG RH LMOB DRGS BLFI XLFIZTV GSZG DV SZEV GSV XSZMXV " +
     "GL HFXXVVW. YFG IVNVNYVI, GSVIV DROO YV XSZOOVMTVH GSZG BLF NFHG LEVIXLNV. " +
     "RG RH GSV VMW ULI NVTZOLKLORH YFG GSV YVTRMMRMT ULI FH!";
-}
   generateLetterMappings();
   document.getElementById('nextChallenge').classList.add('hidden');
 }
@@ -362,6 +362,54 @@ function isUpperCase(letter) {
 function isLetter(letter) {
   const code = letter.charCodeAt(0);
   return (code >= 65 && code <= 90) || (code >= 97 && code <= 122);
+}
+
+// Hash function implementation
+function simpleHash(input) {
+  // Convert to lowercase for case-insensitive counting
+  const str = input.toLowerCase();
+  const charCount = {};
+  
+  // Count each character
+  for (let char of str) {
+    if (charCount[char]) {
+      charCount[char]++;
+    } else {
+      charCount[char] = 1;
+    }
+  }
+  
+  // Sort characters alphabetically
+  const sortedChars = Object.keys(charCount).sort();
+  
+  // Build the hash string
+  let hash = '';
+  for (let char of sortedChars) {
+    hash += char + charCount[char];
+  }
+  
+  return hash;
+}
+
+// Target hash for collision game
+const TARGET_HASH = 'a3b1d1s2';
+
+// Check hash collision
+function checkHashCollision() {
+  const input = document.getElementById('hashInput').value;
+  const hash = simpleHash(input);
+  document.getElementById('hashOutput').textContent = hash;
+  
+  const resultElement = document.getElementById('hashResult');
+  if (hash === TARGET_HASH) {
+    resultElement.textContent = 'Congratulations! You found a hash collision!';
+    resultElement.style.color = '#33ff33';
+    gameState.score += 100;
+    updateScore();
+  } else {
+    resultElement.textContent = 'Not a collision. Try again!';
+    resultElement.style.color = '#ff3333';
+  }
 }
 
 // Toggle instructions modal
