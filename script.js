@@ -23,34 +23,24 @@ for (let i = 0; i < columns; i++) {
 
 // Draw the digital rain
 function drawMatrix() {
-    // Semi-transparent black background to create fade effect
     ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Green text
     ctx.fillStyle = '#0F0';
     ctx.font = fontSize + 'px monospace';
 
-    // Draw characters
     for (let i = 0; i < drops.length; i++) {
-        // Random character
         const char = chars[Math.floor(Math.random() * chars.length)];
-        
-        // Draw the character
         ctx.fillText(char, i * fontSize, drops[i] * fontSize);
 
-        // Reset drop to top when it reaches bottom
         if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
             drops[i] = 0;
         }
         drops[i]++;
     }
 }
-
-// Animate the rain
 setInterval(drawMatrix, 33);
 
-// Game state
 const gameState = {
   score: 0,
   currentChallenge: 0,
@@ -71,7 +61,7 @@ const gameState = {
       hint: "Look for repeated words like 'IS' and 'A' which are common in English."
     }
   ],
-  scoreboard: [] // Array to store completed challenges
+  scoreboard: []
 };
 
 // Letter mappings with Proxy for reactivity
@@ -100,34 +90,51 @@ function initGame() {
   generateLetterMappings();
   loadChallenge(gameState.currentChallenge);
   updateScore();
-}
+
+  // CHANGE #1: Pre-fill the input box with your big Atbash cipher text
+//   document.getElementById("inputText").value =
+//     "R, GSV OVZWVI LU GSV YOZXP WZDM, SZEV ULI BLF Z NRHHRLM LU TIVZG RNKLIGZMXV! " +
+//     "DRGS BLFI SVOK, GSRH XRGB, NVTZOLKLORH, DROO UVVO GSV YOZXP WZDM’H QFWTVNVMG. " +
+//     "DRGS BLFI SVOK, DV DROO YIRMT ZM VMW GL HLXRVGB ZH DV PMLD RG! GL WL GSRH, " +
+//     "BLF DROO KZIGRXRKZGV RM ZM VUULIG GL HZYLGZTV HVXFIRGB, VOVXGIRX KLDVI, " +
+//     "YZMPRMT, ZMW ULLW HFKKORVH. R DLFOW ORPV ZOO LU BLF GL WL GSV ULOOLDRMT GZHPH:\n\n" +
+//     "URIHGOB, DV DROO HSFG WLDM GSV NVTZOLKLORH KLDVI TIRW. GSV KZHHXLWV ULI GSV " +
+//     "KLDVI TIRW HVXFIRGB TZGV RH NVTZKLDVITIRW. RG RH OLXZGVW ZG 12345 M. " +
+//     "KLDVI HGZGRLM DZB. GSVIV RH ML LGSVI DZB ZYLFG GSRH; GSVRI HGIVMTGS UILN " +
+//     "VOVXGIRXRGB DROO YV GSV URIHG GL UZOO.\n\n" +
+//     "HVXLMWOB, DV NFHG YIVZP RMGL GSV NVTZOLKLORH XVMGIZO YZMP. RG RH OLXZGVW " +
+//     "LM 654321 D. NLMVB WIREV. DRGS GSVRI NLMVB, R DROO FHV RG GL ZXSRVEV LFI " +
+//     "TLZOH! GSVIV ZIV LGSVI IVHLFIXVH GSVIV GSZG DV NFHG GZPV DRGS FH UILN " +
+//     "GSV EZFOG. OZHGOB, DV TL GL GSV NVTZOLKLORH XLFIG SLFHV. RG RH OLXZGVW " +
+//     "LM 78910 M. TLEVIMNVMG HGIVVG. RG RH SVIV, RM GSV SVZIG LU GSVRI QFHGRXV, " +
+//     "GSZG DV DROO NZIP GSV VMW LU GSVRI KLDVI. GSRH DROO MLG LMOB YV HBNYLORX " +
+//     "YFG DROO VMHFIV GSV XRGB'H XLOOZKHV UILN DRGSRM. R ZHHFIV BLF, GSRH " +
+//     "NRHHRLM RH XIRGRXZO. RG RH LMOB DRGS BLFI XLFIZTV GSZG DV SZEV GSV XSZMXV " +
+//     "GL HFXXVVW. YFG IVNVNYVI, GSVIV DROO YV XSZOOVMTVH GSZG BLF NFHG LEVIXLNV. " +
+//     "RG RH GSV VMW ULI NVTZOLKLORH YFG GSV YVTRMMRMT ULI FH!";
+// }
 
 // Generate letter mapping table
 function generateLetterMappings() {
   const tbody = document.querySelector('#letterMappings tbody');
   tbody.innerHTML = '';
-  
-  // Start with a random mapping instead of reversed alphabet
+
+  // CHANGE #2: Instead of random letters, start all mappings blank
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-  const shuffled = [...alphabet].sort(() => Math.random() - 0.5);
-  
+
   // Create a single row for all letters
   const row = document.createElement('tr');
   
-  // Create cells for each letter
   for (let i = 0; i < 26; i++) {
     const letter = alphabet[i];
     
-    // Create a cell for each letter
     const cell = document.createElement('td');
     cell.classList.add('letter-mapping-cell');
     
-    // Create the letter display
     const letterDisplay = document.createElement('div');
     letterDisplay.classList.add('letter-display');
     letterDisplay.textContent = letter;
     
-    // Create the input field
     const input = document.createElement('input');
     input.classList.add('letter-mapping');
     input.id = `map${letter}`;
@@ -136,24 +143,21 @@ function generateLetterMappings() {
       letterMappings[letter] = input.value.toUpperCase();
     });
     
-    // Add elements to the cell
     cell.appendChild(letterDisplay);
     cell.appendChild(input);
     row.appendChild(cell);
-    
-    // Initialize with random mapping
-    letterMappings[letter] = shuffled[i];
-    input.value = shuffled[i];
+
+    // NO default mapping: set to blank
+    letterMappings[letter] = "";
+    input.value = "";
   }
   
-  // Add the row to the table
   tbody.appendChild(row);
 }
 
 // Load a challenge
 function loadChallenge(index) {
   if (index >= gameState.challenges.length) {
-    // Game completed
     document.querySelector('.challenge-section').innerHTML = `
       <h2>Congratulations!</h2>
       <p>You've completed all challenges with a score of ${gameState.score}.</p>
@@ -166,26 +170,41 @@ function loadChallenge(index) {
   document.getElementById('challengeText').textContent = challenge.text;
   document.getElementById('inputText').value = '';
   document.getElementById('outputText').textContent = '';
-  
-  // Reset letter mappings for new challenge
+
+  document.getElementById("inputText").value =
+    "R, GSV OVZWVI LU GSV YOZXP WZDM, SZEV ULI BLF Z NRHHRLM LU TIVZG RNKLIGZMXV! " +
+    "DRGS BLFI SVOK, GSRH XRGB, NVTZOLKLORH, DROO UVVO GSV YOZXP WZDM’H QFWTVNVMG. " +
+    "DRGS BLFI SVOK, DV DROO YIRMT ZM VMW GL HLXRVGB ZH DV PMLD RG! GL WL GSRH, " +
+    "BLF DROO KZIGRXRKZGV RM ZM VUULIG GL HZYLGZTV HVXFIRGB, VOVXGIRX KLDVI, " +
+    "YZMPRMT, ZMW ULLW HFKKORVH. R DLFOW ORPV ZOO LU BLF GL WL GSV ULOOLDRMT GZHPH:\n\n" +
+    "URIHGOB, DV DROO HSFG WLDM GSV NVTZOLKLORH KLDVI TIRW. GSV KZHHXLWV ULI GSV " +
+    "KLDVI TIRW HVXFIRGB TZGV RH NVTZKLDVITIRW. RG RH OLXZGVW ZG 12345 M. " +
+    "KLDVI HGZGRLM DZB. GSVIV RH ML LGSVI DZB ZYLFG GSRH; GSVRI HGIVMTGS UILN " +
+    "VOVXGIRXRGB DROO YV GSV URIHG GL UZOO.\n\n" +
+    "HVXLMWOB, DV NFHG YIVZP RMGL GSV NVTZOLKLORH XVMGIZO YZMP. RG RH OLXZGVW " +
+    "LM 654321 D. NLMVB WIREV. DRGS GSVRI NLMVB, R DROO FHV RG GL ZXSRVEV LFI " +
+    "TLZOH! GSVIV ZIV LGSVI IVHLFIXVH GSVIV GSZG DV NFHG GZPV DRGS FH UILN " +
+    "GSV EZFOG. OZHGOB, DV TL GL GSV NVTZOLKLORH XLFIG SLFHV. RG RH OLXZGVW " +
+    "LM 78910 M. TLEVIMNVMG HGIVVG. RG RH SVIV, RM GSV SVZIG LU GSVRI QFHGRXV, " +
+    "GSZG DV DROO NZIP GSV VMW LU GSVRI KLDVI. GSRH DROO MLG LMOB YV HBNYLORX " +
+    "YFG DROO VMHFIV GSV XRGB'H XLOOZKHV UILN DRGSRM. R ZHHFIV BLF, GSRH " +
+    "NRHHRLM RH XIRGRXZO. RG RH LMOB DRGS BLFI XLFIZTV GSZG DV SZEV GSV XSZMXV " +
+    "GL HFXXVVW. YFG IVNVNYVI, GSVIV DROO YV XSZOOVMTVH GSZG BLF NFHG LEVIXLNV. " +
+    "RG RH GSV VMW ULI NVTZOLKLORH YFG GSV YVTRMMRMT ULI FH!";
+}
   generateLetterMappings();
-  
-  // Hide next challenge button until solved
   document.getElementById('nextChallenge').classList.add('hidden');
 }
 
 // Update word frequency table
 function updateFrequencyTable() {
   const tbody = document.querySelector("#wordFrequency tbody");
-  tbody.innerHTML = ''; // Clear existing rows
-  
-  const sortedEntries = Object.entries(wordFrequencies)
-    .sort((a, b) => b[1] - a[1]);
-    
+  tbody.innerHTML = '';
+
+  const sortedEntries = Object.entries(wordFrequencies).sort((a, b) => b[1] - a[1]);
   sortedEntries.forEach(([word, count]) => {
-    if(count > 0) { // Show all words, not just those with count > 1
+    if(count > 0) {
       const row = document.createElement("tr");
-      
       const wordCell = document.createElement("td");
       wordCell.textContent = word;
       wordCell.classList.add("clickable");
@@ -206,10 +225,7 @@ function highlightWord(word) {
   const challengeText = document.getElementById('challengeText');
   const text = challengeText.textContent;
   
-  // Remove existing highlights
   challengeText.innerHTML = text;
-  
-  // Add new highlights
   const regex = new RegExp(`\\b${word}\\b`, 'gi');
   challengeText.innerHTML = text.replace(regex, match => `<span class="highlight">${match}</span>`);
 }
@@ -239,8 +255,7 @@ function decrypt() {
   const textArea = document.getElementById("inputText");
   let input = textArea.value.toUpperCase();
   let output = "";
-  
-  // Create reverse mapping
+
   const reverseMapping = {};
   for (const [key, value] of Object.entries(letterMappings)) {
     reverseMapping[value] = key;
@@ -262,12 +277,10 @@ function decrypt() {
 
 // Analyze word frequency in text
 function analyzeFrequency(text = document.getElementById("inputText").value) {
-  // Reset frequencies
   for (const key in wordFrequencies) {
     delete wordFrequencies[key];
   }
   
-  // Count word frequencies
   const words = text.toLowerCase().match(/\b\w+\b/g) || [];
   words.forEach(word => {
     if (word.length > 0) {
@@ -293,7 +306,6 @@ function updateScore() {
 function showScoreboard() {
   const scoreboardContainer = document.getElementById('scoreboardContainer');
   if (!scoreboardContainer) {
-    // Create scoreboard container if it doesn't exist
     const container = document.createElement('div');
     container.id = 'scoreboardContainer';
     container.className = 'scoreboard-container';
@@ -323,12 +335,10 @@ function showScoreboard() {
     container.appendChild(header);
     container.appendChild(table);
     
-    // Insert after the hint container
     const hintContainer = document.querySelector('.hint-container');
     hintContainer.parentNode.insertBefore(container, hintContainer.nextSibling);
   }
   
-  // Update scoreboard content
   updateScoreboard();
 }
 
@@ -355,9 +365,8 @@ function updateScoreboard() {
 function resetGame() {
   gameState.score = 0;
   gameState.currentChallenge = 0;
-  gameState.scoreboard = []; // Clear scoreboard
+  gameState.scoreboard = [];
   
-  // Remove scoreboard if it exists
   const scoreboardContainer = document.getElementById('scoreboardContainer');
   if (scoreboardContainer) {
     scoreboardContainer.remove();
@@ -396,10 +405,8 @@ window.onclick = function(event) {
 function toggleLeaderboard() {
   const leaderboardContainer = document.getElementById('leaderboardContainer');
   if (leaderboardContainer) {
-    // Toggle visibility
     leaderboardContainer.style.display = leaderboardContainer.style.display === 'block' ? 'none' : 'block';
   } else {
-    // Create leaderboard container if it doesn't exist
     const container = document.createElement('div');
     container.id = 'leaderboardContainer';
     container.className = 'leaderboard-container';
@@ -428,26 +435,20 @@ function toggleLeaderboard() {
     container.appendChild(header);
     container.appendChild(table);
     
-    // Insert after the scoreboard container
     const scoreboardContainer = document.getElementById('scoreboardContainer');
     scoreboardContainer.parentNode.insertBefore(container, scoreboardContainer.nextSibling);
-    
-    // Initially display the leaderboard
     container.style.display = 'block';
   }
   
-  // Update leaderboard content
   updateLeaderboard();
 }
 
-// Update leaderboard content
 function updateLeaderboard() {
   const tbody = document.getElementById('leaderboardBody');
   if (!tbody) return;
   
   tbody.innerHTML = '';
   
-  // Sort scores in descending order
   const sortedScores = [...gameState.scoreboard].sort((a, b) => b.score - a.score);
   
   sortedScores.forEach((entry, index) => {
@@ -461,121 +462,5 @@ function updateLeaderboard() {
   });
 }
 
-// Initialize the game when the page loads
+// Initialize game
 document.addEventListener('DOMContentLoaded', initGame);
-
-// Hashing function
-function generateHash(input) {
-  let freq = {};
-  for(let i = 0; i < 26; i++) {
-    let letter = String.fromCharCode(97 + i);
-    freq[letter] = 0;
-  }
-
-  for(let i = 0; i < input.length; i++) {
-    if(isLetter(input[i]))
-      freq[input[i].toLowerCase()]++;
-  }
-
-  let hash = "";
-  for(let i = 0; i < 26; i++) {
-    const letter = String.fromCharCode(97+i);
-    if(freq[letter] > 0)                
-      hash += letter + freq[letter];
-  }
-
-  return hash;
-}
-
-// Event listener for hash input
-document.getElementById("hashInput").addEventListener("input", function() {
-  const input = this.value;
-  document.getElementById("hashOutput").textContent = generateHash(input);
-});
-
-// Add event listeners for real-time frequency analysis
-document.getElementById("inputText").addEventListener("input", function() {
-  analyzeFrequency(this.value);
-});
-
-// Initialize frequency analysis on page load
-document.addEventListener('DOMContentLoaded', function() {
-  analyzeFrequency();
-});
-
-// Initialize Pyodide
-let pyodide = null;
-let isInitialized = false;
-
-async function initPyodide() {
-  if (isInitialized) return;
-  
-  const sandbox = document.querySelector('.python-sandbox');
-  const loadingIndicator = document.createElement('div');
-  loadingIndicator.className = 'loading-indicator';
-  loadingIndicator.textContent = 'Initializing Python environment...';
-  sandbox.appendChild(loadingIndicator);
-  
-  try {
-    pyodide = await loadPyodide();
-    await pyodide.loadPackage("micropip");
-    
-    // Define a helper function to make HTTP calls
-    // Example usage: 
-    // res = await send_http_request("http://localhost/api")
-    await pyodide.runPythonAsync(`
-      from pyodide.http import pyfetch
-
-      async def send_http_request(url):
-          response = await pyfetch(url)  # Await pyfetch directly
-          return await response.string()  # Return the string content of the response
-    `);
-    isInitialized = true;
-    loadingIndicator.remove();
-  } catch (error) {
-    loadingIndicator.textContent = `Error: ${error.message}`;
-    loadingIndicator.className = 'error-message';
-  }
-}
-
-// Run Python code
-async function runPythonCode() {
-  if (!isInitialized) {
-    await initPyodide();
-  }
-  
-  const code = document.getElementById('pythonCode').value;
-  const outputDiv = document.getElementById('pythonOutput');
-  
-  if (!isInitialized) {
-    outputDiv.textContent = 'Python environment is still initializing...';
-    return;
-  }
-  
-  try {
-    // Redirect stdout to our output div
-    pyodide.runPython(`
-      import sys
-      from io import StringIO
-      sys.stdout = StringIO()
-    `);
-    
-    // Run the user's code
-    await pyodide.runPythonAsync(code);
-    
-    // Get the output
-    const output = pyodide.runPython('sys.stdout.getvalue()');
-    outputDiv.textContent = output;
-  } catch (error) {
-    outputDiv.textContent = `Error: ${error.message}`;
-  }
-}
-
-// Clear Python output
-function clearPythonOutput() {
-  document.getElementById('pythonOutput').textContent = '';
-}
-
-// Initialize Pyodide when the sandbox is first interacted with
-document.getElementById('pythonCode').addEventListener('focus', initPyodide);
-document.querySelector('.sandbox-controls button').addEventListener('click', initPyodide); 
