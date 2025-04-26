@@ -180,7 +180,7 @@ function updateFrequencyTable() {
 
   const sortedEntries = Object.entries(wordFrequencies).sort((a, b) => b[1] - a[1]);
   sortedEntries.forEach(([word, count]) => {
-    if(count > 0) {
+    if(count > 3) {
       const row = document.createElement("tr");
       const wordCell = document.createElement("td");
       wordCell.textContent = word;
@@ -367,15 +367,17 @@ function isLetter(letter) {
 // Hash function implementation
 function simpleHash(input) {
   // Convert to lowercase for case-insensitive counting
-  const str = input.toLowerCase();
+  const str = input.toUpperCase();
   const charCount = {};
   
   // Count each character
   for (let char of str) {
-    if (charCount[char]) {
-      charCount[char]++;
-    } else {
-      charCount[char] = 1;
+    if (isLetter(char)) {
+      if(charCount[char]) {
+        charCount[char]++;
+      } else {
+        charCount[char] = 1;
+      }
     }
   }
   
@@ -392,7 +394,7 @@ function simpleHash(input) {
 }
 
 // Target hash for collision game
-const TARGET_HASH = 'a3b1d1s2';
+const TARGET_HASH = 'A59B17C34D23E125F20G24H54I89J2K10L65M24N45O89P20R62S62T110U34V7W39Y24';
 
 // Check hash collision
 function checkHashCollision() {
@@ -410,6 +412,13 @@ function checkHashCollision() {
     resultElement.textContent = 'Not a collision. Try again!';
     resultElement.style.color = '#ff3333';
   }
+}
+
+// Check hash collision
+function updateHash() {
+  const input = document.getElementById('hashInput').value;
+  const hash = simpleHash(input);
+  document.getElementById('hashOutput').textContent = hash;
 }
 
 // Toggle instructions modal
@@ -489,3 +498,80 @@ function updateLeaderboard() {
 
 // Initialize game
 document.addEventListener('DOMContentLoaded', initGame);
+
+// Initialize Pyodide
+let pyodide = null;
+let isInitialized = false;
+
+async function initPyodide() {
+  if (isInitialized) return;
+  
+  const sandbox = document.querySelector('.python-sandbox');
+  const loadingIndicator = document.createElement('div');
+  loadingIndicator.className = 'loading-indicator';
+  loadingIndicator.textContent = 'Initializing Python environment...';
+  sandbox.appendChild(loadingIndicator);
+  
+  try {
+    pyodide = await loadPyodide();
+    await pyodide.loadPackage("micropip");
+    
+    // Define a helper function to make HTTP calls
+    // Example usage: 
+    // res = await send_http_request("http://localhost/api")
+    await pyodide.runPythonAsync(`
+      from pyodide.http import pyfetch
+
+      async def send_http_request(url):
+          response = await pyfetch(url)  # Await pyfetch directly
+          return await response.string()  # Return the string content of the response
+    `);
+    isInitialized = true;
+    loadingIndicator.remove();
+  } catch (error) {
+    loadingIndicator.textContent = `Error: ${error.message}`;
+    loadingIndicator.className = 'error-message';
+  }
+}
+
+// Run Python code
+async function runPythonCode() {
+  if (!isInitialized) {
+    await initPyodide();
+  }
+  
+  const code = document.getElementById('pythonCode').value;
+  const outputDiv = document.getElementById('pythonOutput');
+  
+  if (!isInitialized) {
+    outputDiv.textContent = 'Python environment is still initializing...';
+    return;
+  }
+  
+  try {
+    // Redirect stdout to our output div
+    pyodide.runPython(`
+      import sys
+      from io import StringIO
+      sys.stdout = StringIO()
+    `);
+    
+    // Run the user's code
+    await pyodide.runPythonAsync(code);
+    
+    // Get the output
+    const output = pyodide.runPython('sys.stdout.getvalue()');
+    outputDiv.textContent = output;
+  } catch (error) {
+    outputDiv.textContent = `Error: ${error.message}`;
+  }
+}
+
+// Clear Python output
+function clearPythonOutput() {
+  document.getElementById('pythonOutput').textContent = '';
+}
+
+// Initialize Pyodide when the sandbox is first interacted with
+document.getElementById('pythonCode').addEventListener('focus', initPyodide);
+document.querySelector('.sandbox-controls button').addEventListener('click', initPyodide); 

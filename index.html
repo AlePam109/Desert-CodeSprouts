@@ -16,20 +16,32 @@
       <span class="close" onclick="toggleInstructions()">&times;</span>
       <h2>Instructions</h2>
       <div class="instructions-content">
-        <h3>Substitution Cipher Challenge</h3>
+        <h3>Task 1: Breaking the Substitution Cipher</h3>
         <p>In cryptography, a substitution cipher is a method of encrypting by which units of plaintext are replaced with ciphertext according to a fixed system.</p>
         <p>Your task is to break the cipher by:</p>
         <ol>
-          <li>Analyzing the frequency of letters and words in the encrypted text</li>
-          <li>Guessing letter mappings based on common patterns</li>
-          <li>Testing your solution by typing in the input box</li>
+          <li>Analyzing the frequency of words in the encrypted text</li>
+          <li>Guessing letter mappings based on common words in the English language</li>
         </ol>
-        <p>Common patterns to look for:</p>
+        <p>Tips:</p>
         <ul>
-          <li>Single-letter words are usually 'a' or 'i'</li>
-          <li>The most common letters in English are E, T, A, O, I, N</li>
+          <li>Check the common words in the English language like "THE", "WILL", "THAT" etc.</li>
           <li>Common word endings include -ing, -ed, -tion</li>
         </ul>
+        <h3>Task 2: Finding a Hash Collision</h3>
+        <p>A hash function transforms any input into a fixed length output</p>
+        <ol>
+          <li>Identify the hash function by trying different inputs</li>
+          <li>Modify the decrypted plaintext message, such that the hash remains the same</li>
+        </ol>
+        <h3>Task 3: Launch a DDoS attack</h3>
+        <p>We need to send lots of HTTP requests to the Black Dawn's communication's server to make it unavailable</p>
+        <p>Python tips and tricks:</p>
+        <ol>
+          <li>Prepare the URL string. The IP address is IP_ADDR</li>
+          <li>use the "send_http_request(URL)" function to send the HTTP request</li>
+          <li>A for loop can be used to send a request multiple times</li>
+        </ol>
       </div>
     </div>
   </div>
@@ -101,7 +113,7 @@
       <h3>Hash Collision Game</h3>
       <p>Find an input that produces the same hash as the target!</p>
       <div class="hashing-box">
-        <textarea id="hashInput" placeholder="Type here to generate hash..."></textarea>
+        <textarea id="hashInput" placeholder="Type here to generate hash..." oninput=updateHash()></textarea>
         <div class="output-container">
           <label>Hash Output:</label>
           <div id="hashOutput" class="output-display"></div>
