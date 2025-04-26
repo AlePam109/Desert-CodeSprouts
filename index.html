@@ -2,20 +2,204 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Desert CodeSprouts - Cybersecurity Game</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Inline overrides (keeps your original CSS intact) -->
+  <style>
+    /* ───────── Navigation bar ───────── */
+    .nav-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 10px 0;
+      background: #000;
+      border-bottom: 2px solid #33ff33;
+      z-index: 998;
+    }
+    .nav-bar button {
+      font-family: "VT323", monospace;
+      font-size: 20px;
+      padding: 6px 26px;
+      border: 1px solid #33ff33;
+      background: #0a0a0a;
+      color: #33ff33;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-bar button:hover {
+      background: #00cc00;
+      color: #0a0a0a;
+      transform: scale(1.05);
+    }
+
+    /* Offset content so nav doesn't overlap */
+    body > canvas,
+    body > img,
+    body > section {
+      margin-top: 60px;
+    }
+
+    /* Plain-green headers (no glitch) */
+    .glitch-title {
+      animation: none !important;
+      text-shadow: none !important;
+      color: #33ff33 !important;
+    }
+    .glitch-title::before,
+    .glitch-title::after {
+      display: none !important;
+    }
+
+    /* Instructions button pinned top-left */
+    #instructionsButton {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      font-size: 24px;
+      font-weight: bold;
+      font-family: "VT323", monospace;
+      color: #33ff33;
+      cursor: pointer;
+      z-index: 999;
+      transition: color 0.3s;
+    }
+    #instructionsButton:hover {
+      color: #00cc00;
+    }
+
+    /* Dim the Matrix rain */
+    #matrixCanvas {
+      opacity: 0.45; /* lower = dimmer */
+      pointer-events: none;
+    }
+  </style>
 </head>
 <body>
+  <!-- Matrix Rain & Cat Mascot -->
   <canvas id="matrixCanvas"></canvas>
   <img id="catImage" src="cat.png" alt="Cat Mascot" />
+
+  <!-- Navigation -->
+  <nav class="nav-bar">
+    <button onclick="showPage('cipher')">Cipher Challenge</button>
+    <button onclick="showPage('hash')">Hash Collision Game</button>
+    <button onclick="showPage('python')">Python Sandbox</button>
+  </nav>
+
+  <!-- Instructions trigger -->
   <div id="instructionsButton" onclick="toggleInstructions()">Instructions</div>
 
+  <!-- Instructions Modal -->
   <div id="instructionsModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="toggleInstructions()">&times;</span>
-      <h2>Instructions</h2>
-      <div class="instructions-content">
+      <div id="instructionsContent" class="instructions-content"></div>
+    </div>
+  </div>
+
+  <!-- PAGE 1: Cipher Challenge -->
+  <section id="page-cipher">
+    <div class="container">
+      <div class="game-header">
+        <h1 class="glitch-title">Substitution Cipher Challenge</h1>
+      </div>
+      <div class="challenge-section">
+        <h2>Challenge #1</h2>
+        <div class="challenge-text" id="challengeText"></div>
+        <button id="nextChallenge" class="hidden">Next Challenge</button>
+      </div>
+      <textarea id="inputText" placeholder="Type here to encrypt or decrypt..."></textarea>
+      <div class="output-container">
+        <label>Encrypted/Decrypted Output:</label>
+        <div id="outputText" class="output-display"></div>
+      </div>
+      <div class="tables">
+        <div class="table-container">
+          <h3>Letter Mappings</h3>
+          <table id="letterMappings">
+            <thead>
+              <tr><th colspan="26">Map each letter to its substitution</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div class="button-row">
+            <button onclick="encrypt()">Encrypt</button>
+            <button onclick="decrypt()">Decrypt</button>
+          </div>
+        </div>
+        <div class="table-container">
+          <h3>Word Frequency Analysis</h3>
+          <table id="wordFrequency">
+            <thead>
+              <tr><th>Word</th><th>Frequency</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="clickable" onclick="highlightWord('example')">example</span></td>
+                <td>5</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE 2: Hash Collision Game -->
+  <section id="page-hash" style="display:none;">
+    <div class="container">
+      <h1 class="glitch-title" style="text-align:center;margin-top:0;">Hash Collision Game</h1>
+      <div class="hashing-container">
+        <p>Find an input that produces the same hash as the target!</p>
+        <div class="hashing-box">
+          <textarea id="hashInput" placeholder="Type here to generate hash..." oninput="updateHash()"></textarea>
+          <div class="output-container">
+            <label>Hash Output:</label>
+            <div id="hashOutput" class="output-display"></div>
+          </div>
+        </div>
+        <p id="hashResult"></p>
+        <button onclick="checkHashCollision()">Check Collision</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE 3: Python Sandbox -->
+  <section id="page-python" style="display:none;">
+    <div class="container">
+      <h1 class="glitch-title" style="text-align:center;margin-top:0;">Python Sandbox</h1>
+      <div class="python-sandbox">
+        <div class="sandbox-container">
+          <textarea id="pythonCode" placeholder="Write your Python code here..."></textarea>
+          <div class="sandbox-controls">
+            <button onclick="runPythonCode()">Run Code</button>
+            <button onclick="clearPythonOutput()">Clear Output</button>
+          </div>
+          <div class="sandbox-output">
+            <h4>Output:</h4>
+            <div id="pythonOutput"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Your existing script references -->
+  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+
+  <!-- Page-switch & dynamic instructions logic -->
+  <script>
+    const pageInstructions = {
+      cipher: `
+        <h2>Instructions</h2>
         <h3>Task 1: Breaking the Substitution Cipher</h3>
         <p>In cryptography, a substitution cipher is a method of encrypting by which units of plaintext are replaced with ciphertext according to a fixed system.</p>
         <p>Your task is to break the cipher by:</p>
@@ -25,122 +209,75 @@
         </ol>
         <p>Tips:</p>
         <ul>
-          <li>Check the common words in the English language like "THE", "WILL", "THAT" etc.</li>
-          <li>Common word endings include -ing, -ed, -tion</li>
+          <li>Check common words like “THE”, “WILL”, “THAT”, etc.</li>
+          <li>Common word endings include <em>-ing</em>, <em>-ed</em>, <em>-tion</em></li>
         </ul>
-        <h3>Task 2: Finding a Hash Collision</h3>
-        <p>A hash function transforms any input into a fixed length output</p>
+        <p><strong>Most commonly used English language words:</strong></p>
+        <ul>
+          <li>length 1: <code>i</code></li>
+          <li>length 2: <code>is</code>, <code>it</code>, <code>to</code>, <code>of</code>, <code>we</code></li>
+          <li>length 3: <code>the</code>, <code>you</code>, <code>for</code></li>
+          <li>length 4: <code>that</code>, <code>this</code>, <code>will</code>, <code>with</code></li>
+          <li>length 5: <code>their</code>, <code>there</code></li>
+        </ul>
+      `,
+      hash: `
+        <h2>Instructions</h2>
+        <h3>Hash Collision Game</h3>
+        <p>Your goal is to find an input that produces the <strong>same hash value</strong> as the target.</p>
         <ol>
-          <li>Identify the hash function by trying different inputs</li>
-          <li>Modify the decrypted plaintext message, such that the hash remains the same</li>
+          <li>Type candidate inputs into the text area.</li>
+          <li>The application shows you the hash produced.</li>
+          <li>Click <em>Check Collision</em> to compare against the target hash.</li>
         </ol>
-        <h3>Task 3: Launch a DDoS attack</h3>
-        <p>We need to send lots of HTTP requests to the Black Dawn's communication's server to make it unavailable</p>
-        <p>Python tips and tricks:</p>
+        <p>Tip: Small tweaks (adding spaces, punctuation, or incrementing numbers) may help you collide.</p>
+      `,
+      python: `
+        <h2>Instructions</h2>
+        <h3>Python Sandbox</h3>
+        <p>This sandbox runs Python (via Pyodide) directly in your browser.</p>
         <ol>
-          <li>Prepare the URL string. The IP address is IP_ADDR</li>
-          <li>use the "send_http_request(URL)" function to send the HTTP request</li>
-          <li>A for loop can be used to send a request multiple times</li>
+          <li>Write Python code in the editor.</li>
+          <li>Press <em>Run Code</em> to execute. Output (stdout or errors) appears below.</li>
+          <li>Press <em>Clear Output</em> to reset the output pane.</li>
         </ol>
-      </div>
-    </div>
-  </div>
+        <p>Security note: the sandbox is isolated, but avoid pasting sensitive secrets.</p>
+      `
+    };
 
-  <div class="container">
-    <div class="game-header">
-      <h1 class="glitch-title">Substitution Cipher Challenge</h1>
-    </div>
+    let currentPage = "cipher";
 
-    <!-- Challenge section -->
-    <div class="challenge-section">
-      <h2>Challenge #1</h2>
-      <div class="challenge-text" id="challengeText">
-        <!-- Challenge text will be inserted here -->
-      </div>
-      <button id="nextChallenge" class="hidden">Next Challenge</button>
-    </div>
+    function showPage(page) {
+      currentPage = page;
+      const pages = {
+        cipher: "page-cipher",
+        hash: "page-hash",
+        python: "page-python"
+      };
+      Object.values(pages).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "none";
+      });
+      document.getElementById(pages[page]).style.display = "block";
+    }
 
-    <!-- Input box for encryption -->
-    <textarea id="inputText" placeholder="Type here to encrypt or decrypt..."></textarea>
-    <!-- Output box appears at the top -->
-    <div class="output-container">
-      <label>Encrypted/Decrypted Output:</label>
-      <div id="outputText" class="output-display"></div>
-    </div>
+    document.addEventListener("DOMContentLoaded", () => showPage("cipher"));
 
-    <div class="tables">
-      <!-- Left table container: Letter mappings + Encrypt button below -->
-      <div class="table-container">
-        <h3>Letter Mappings</h3>
-        <table id="letterMappings">
-          <thead>
-            <tr>
-              <th colspan="26">Map each letter to its substitution</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Letter mappings will be generated here -->
-          </tbody>
-        </table>
-        <div class="button-row">
-          <button onclick="encrypt()">Encrypt</button>
-          <button onclick="decrypt()">Decrypt</button>
-        </div>
-      </div>
-      <!-- Right table container: Word frequency + Analyze button below -->
-      <div class="table-container">
-        <h3>Word Frequency Analysis</h3>
-        <table id="wordFrequency">
-          <thead>
-            <tr>
-              <th>Word</th>
-              <th>Frequency</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Default row: Always display example row -->
-            <tr>
-              <td><span class="clickable" onclick="highlightWord('example')">example</span></td>
-              <td>5</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    function toggleInstructions() {
+      const modal = document.getElementById("instructionsModal");
+      const content = document.getElementById("instructionsContent");
+      if (modal.style.display === "block") {
+        modal.style.display = "none";
+      } else {
+        content.innerHTML = pageInstructions[currentPage];
+        modal.style.display = "block";
+      }
+    }
 
-    <!-- Hashing function box -->
-    <div class="hashing-container">
-      <h3>Hash Collision Game</h3>
-      <p>Find an input that produces the same hash as the target!</p>
-      <div class="hashing-box">
-        <textarea id="hashInput" placeholder="Type here to generate hash..." oninput=updateHash()></textarea>
-        <div class="output-container">
-          <label>Hash Output:</label>
-          <div id="hashOutput" class="output-display"></div>
-        </div>
-      </div>
-      <p id="hashResult"></p>
-      <button onclick="checkHashCollision()">Check Collision</button>
-    </div>
-
-    <!-- Python Sandbox -->
-    <div class="python-sandbox">
-      <h3>Python Sandbox</h3>
-      <div class="sandbox-container">
-        <textarea id="pythonCode" placeholder="Write your Python code here..."></textarea>
-        <div class="sandbox-controls">
-          <button onclick="runPythonCode()">Run Code</button>
-          <button onclick="clearPythonOutput()">Clear Output</button>
-        </div>
-        <div class="sandbox-output">
-          <h4>Output:</h4>
-          <div id="pythonOutput"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
-  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+    window.onclick = function (e) {
+      const modal = document.getElementById("instructionsModal");
+      if (e.target === modal) modal.style.display = "none";
+    };
+  </script>
 </body>
 </html>
