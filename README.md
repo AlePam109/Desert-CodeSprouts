@@ -8,3 +8,11 @@ The game will include the following activities:
 1. Breaking the Substitution Cipher
 2. Reverse engineering a hash and finding a collision
 3. Launching a DDoS attack / Rate limiting a DDoS attack
+
+## Running Tests
+
+To verify the hash function works correctly run:
+
+```bash
+node test/simpleHash.test.js
+```
