@@ -290,7 +290,8 @@ function nextChallenge() {
 
 // Update score display
 function updateScore() {
-  document.getElementById('score').textContent = gameState.score;
+  const el = document.getElementById('score');
+  if (el) el.textContent = gameState.score;
 }
 
 // Show scoreboard
