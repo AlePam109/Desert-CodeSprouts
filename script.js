@@ -588,4 +588,7 @@ function clearPythonOutput() {
 
 // Initialize Pyodide when the sandbox is first interacted with
 document.getElementById('pythonCode').addEventListener('focus', initPyodide);
-document.querySelector('.sandbox-controls button').addEventListener('click', initPyodide); 
+document.querySelector('.sandbox-controls button').addEventListener('click', initPyodide);
+
+// Export simpleHash for Node.js environments
+if (typeof module !== 'undefined') module.exports = { simpleHash };
