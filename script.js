@@ -212,18 +212,32 @@ function encrypt() {
   const textArea = document.getElementById("inputText");
   let input = textArea.value.toUpperCase();
   let output = "";
+  let changedIndices = [];
   
   for (let i = 0; i < input.length; i++) {
     const char = input[i];
     if (isLetter(char)) {
       const mapped = letterMappings[char] || char;
       output += mapped;
+      if (mapped !== char) {
+        changedIndices.push(i);
+      }
     } else {
       output += char;
     }
   }
   
-  document.getElementById("outputText").textContent = output;
+  // Create HTML with highlighted changed characters
+  let highlightedOutput = "";
+  for (let i = 0; i < output.length; i++) {
+    if (changedIndices.includes(i)) {
+      highlightedOutput += `<span class="highlight">${output[i]}</span>`;
+    } else {
+      highlightedOutput += output[i];
+    }
+  }
+  
+  document.getElementById("outputText").innerHTML = highlightedOutput;
   analyzeFrequency(output);
 }
 
