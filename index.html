@@ -36,6 +36,12 @@
       border-radius:6px;cursor:pointer;z-index:999;transition:.2s;}
     #themeToggle:hover{background:#00cc00;color:#0a0a0a;}
 
+    /* Score display */
+    #scoreDisplay{
+      position:fixed;top:15px;right:120px;font:20px/1 "VT323",monospace;
+      color:#33ff33;z-index:999;
+    }
+
     #matrixCanvas{opacity:.45;pointer-events:none;}
 
     /* ───── INPUT/OUTPUT SIDE‑BY‑SIDE ───── */
@@ -53,6 +59,7 @@
   <canvas id="matrixCanvas"></canvas>
   <img id="catImage" src="cat.png" alt="Cat Mascot"/>
   <button id="themeToggle" onclick="toggleTheme()">Light / Dark</button>
+  <div id="scoreDisplay">Score: <span id="score">0</span></div>
 
   <nav class="nav-bar">
     <button onclick="showPage('cipher')">Cipher Challenge</button>
